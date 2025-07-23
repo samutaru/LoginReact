@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home - Tres en Raya</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f3f4f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      color: #1f2937;
+      margin-bottom: 1rem;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 10px;
+    }
+
+    .cell {
+      background-color: #fff;
+      border: 2px solid #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+
+    .cell:hover {
+      background-color: #e2e8f0;
+    }
+
+    .status {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: #334155;
+    }
+
+    .reset-button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: #222d3f;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .reset-button:hover {
+      background-color: #2563eb;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bienvenido - Tres en Raya</h1>
+  <div class="board" id="board">
+    <div class="cell" data-index="0"></div>
+    <div class="cell" data-index="1"></div>
+    <div class="cell" data-index="2"></div>
+    <div class="cell" data-index="3"></div>
+    <div class="cell" data-index="4"></div>
+    <div class="cell" data-index="5"></div>
+    <div class="cell" data-index="6"></div>
+    <div class="cell" data-index="7"></div>
+    <div class="cell" data-index="8"></div>
+  </div>
+  <div class="status" id="status">Turno de: X</div>
+  <button class="reset-button" onclick="resetGame()">Reiniciar</button>
+
+  <script>
+    const board = document.getElementById('board');
+    const statusText = document.getElementById('status');
+    let currentPlayer = 'X';
+    let gameState = Array(9).fill('');
+    let isGameActive = true;
+
+    const winningCombos = [
+      [0,1,2], [3,4,5], [6,7,8], // filas
+      [0,3,6], [1,4,7], [2,5,8], // columnas
+      [0,4,8], [2,4,6]           // diagonales
+    ];
+
+    board.addEventListener('click', e => {
+      const cell = e.target;
+      const index = cell.dataset.index;
+
+      if (!cell.classList.contains('cell') || gameState[index] || !isGameActive) return;
+
+      gameState[index] = currentPlayer;
+      cell.textContent = currentPlayer;
+
+      if (checkWinner()) {
+        statusText.textContent = `¡Ganador: ${currentPlayer}!`;
+        isGameActive = false;
+        return;
+      }
+
+      if (!gameState.includes('')) {
+        statusText.textContent = '¡Empate!';
+        isGameActive = false;
+        return;
+      }
+
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      statusText.textContent = `Turno de: ${currentPlayer}`;
+    });
+
+    function checkWinner() {
+      return winningCombos.some(combo => {
+        const [a, b, c] = combo;
+        return gameState[a] && gameState[a] === gameState[b] && gameState[a] === gameState[c];
+      });
+    }
+
+    function resetGame() {
+      gameState = Array(9).fill('');
+      currentPlayer = 'X';
+      isGameActive = true;
+      statusText.textContent = `Turno de: ${currentPlayer}`;
+      document.querySelectorAll('.cell').forEach(cell => cell.textContent = '');
+    }
+  </script>
+</body>
+</html>

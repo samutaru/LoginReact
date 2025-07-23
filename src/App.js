@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
-import HomePage from './pages/HomePage';
+import HomePage from './homepage'; // Cambia esto si no quieres mover el archivo
 
 function App() {
   return (
